@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
 class Member(models.Model):
@@ -7,3 +8,11 @@ class Member(models.Model):
 
     class Meta:
         db_table = 'member'  
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False

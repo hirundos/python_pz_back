@@ -11,7 +11,7 @@ class PizzaType(models.Model):
 
 class Pizza(models.Model):
     pizza_id = models.CharField(max_length=50, primary_key=True)
-    pizza_type = models.ForeignKey(PizzaType, on_delete=models.CASCADE, db_column='pizza_type_id')
+    pizza_type_id = models.ForeignKey(PizzaType, on_delete=models.CASCADE, db_column='pizza_type_id')
     size = models.CharField(max_length=50)
     price = models.FloatField()
 

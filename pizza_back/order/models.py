@@ -19,3 +19,10 @@ class OrderDetail(models.Model):
 
     class Meta:
         db_table = 'order_detail'
+
+class Branch(models.Model):
+    bran_id = models.CharField(max_length=100, primary_key=True)
+    bran_nm = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'branch'
