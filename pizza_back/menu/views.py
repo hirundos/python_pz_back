@@ -7,9 +7,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 def pizza_list(request):
-    pizzas = Pizza.objects.select_related('pizza_type').values(
-        'pizza_type__pizza_categ', 
-        'pizza_type__pizza_nm', 
+    pizzas = Pizza.objects.select_related('pizza_type_id').values(
+        'pizza_type_id__pizza_categ', 
+        'pizza_type_id__pizza_nm', 
         'size', 
         'price', 
     )

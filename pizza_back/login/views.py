@@ -81,16 +81,8 @@ def register_member(request):
 def verify_jwt_token(token):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-        return payload  # 유효하면 payload 반환
+        return payload 
     except jwt.ExpiredSignatureError:
         return None  # 토큰 만료
     except jwt.InvalidTokenError:
         return None  # 유효하지 않은 토큰
-
-# 인증이 필요한 API에서 아래와 같이 사용 예시:
-# token = request.META.get('HTTP_AUTHORIZATION', '').split('Bearer ')[-1]
-# payload = verify_jwt_token(token)
-# if not payload:
-#     return JsonResponse({'error': 'Invalid or expired token.'}, status=401)
-# ...이후 인증된 사용자 로직...
-
