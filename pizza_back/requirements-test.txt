@@ -1,7 +1,0 @@
-# 테스트 실행을 위한 추가 패키지
-coverage>=7.0.0
-pytest>=7.0.0
-pytest-django>=4.5.0
-pytest-cov>=4.0.0
-factory-boy>=3.2.0
-freezegun>=1.2.0
