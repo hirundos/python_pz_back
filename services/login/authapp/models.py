@@ -9,4 +9,7 @@ class Member(models.Model):
     class Meta:
         db_table = "member"
 
+    def __str__(self):
+        return self.member_id
+
 

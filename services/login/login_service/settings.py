@@ -53,13 +53,8 @@ ASGI_APPLICATION = "login_service.asgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": os.getenv("DB_HOST", "localhost"),
-        "PORT": int(os.getenv("DB_PORT", "5432")),
-        "NAME": os.getenv("DB_NAME", "pizza"),
-        "USER": os.getenv("DB_USER", "pizza"),
-        "PASSWORD": os.getenv("DB_PASSWORD", "pizza"),
-        "CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "60")),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 

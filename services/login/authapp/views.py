@@ -37,7 +37,7 @@ class RegisterView(APIView):
     def post(self, request):
         data = request.data or {}
         member_id = data.get("member_id")
-        password = data.get("password")
+        password = data.get("password") or data.get("member_pwd")  # member_pwd도 지원
         member_nm = data.get("member_nm")
         if not member_id or not password or not member_nm:
             return JsonResponse({"detail": "missing fields"}, status=400)
@@ -48,7 +48,7 @@ class RegisterView(APIView):
             member_pwd=make_password(password),
             member_nm=member_nm,
         )
-        return JsonResponse({"member_id": member_id})
+        return JsonResponse({"member_id": member_id}, status=201)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -58,7 +58,7 @@ class LoginView(APIView):
     def post(self, request):
         data = request.data or {}
         member_id = data.get("member_id")
-        password = data.get("password")
+        password = data.get("password") or data.get("member_pwd")  # member_pwd도 지원
         try:
             m = Member.objects.get(member_id=member_id)
         except Member.DoesNotExist:

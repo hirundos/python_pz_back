@@ -16,8 +16,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
-    "catalog",
+    "catalog.apps.CatalogConfig",  # AppConfig 클래스 직접 사용
 ]
+
+# catalog 앱 명시적 로드
+from catalog.apps import CatalogConfig
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -53,13 +56,8 @@ ASGI_APPLICATION = "menu_service.asgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": os.getenv("DB_HOST", "localhost"),
-        "PORT": int(os.getenv("DB_PORT", "5432")),
-        "NAME": os.getenv("DB_NAME", "pizza"),
-        "USER": os.getenv("DB_USER", "pizza"),
-        "PASSWORD": os.getenv("DB_PASSWORD", "pizza"),
-        "CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "60")),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 

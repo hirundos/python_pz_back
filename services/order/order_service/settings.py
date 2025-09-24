@@ -16,8 +16,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
-    "orders",
+    "orders.apps.OrdersConfig",  # AppConfig 클래스 직접 사용
 ]
+
+# orders 앱 명시적 로드
+from orders.apps import OrdersConfig
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -53,13 +56,8 @@ ASGI_APPLICATION = "order_service.asgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": os.getenv("DB_HOST", "localhost"),
-        "PORT": int(os.getenv("DB_PORT", "5432")),
-        "NAME": os.getenv("DB_NAME", "pizza"),
-        "USER": os.getenv("DB_USER", "pizza"),
-        "PASSWORD": os.getenv("DB_PASSWORD", "pizza"),
-        "CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "60")),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -72,5 +70,9 @@ STATIC_URL = "/static/"
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+# JWT 설정
+JWT_SECRET = os.getenv("JWT_SECRET", "your-jwt-secret-key-change-this-in-production")
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 
 

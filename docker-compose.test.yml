@@ -1,0 +1,159 @@
+version: '3.8'
+
+services:
+  # 테스트 데이터베이스
+  test-db:
+    image: postgres:13
+    container_name: pizza_test_db
+    environment:
+      POSTGRES_DB: pizza_test
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - test_db_data:/var/lib/postgresql/data
+      - ./scripts/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user -d pizza_test"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis (캐시용)
+  test-redis:
+    image: redis:7-alpine
+    container_name: pizza_test_redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - test_redis_data:/data
+
+  # Login Service 테스트
+  login-service-test:
+    build:
+      context: ./services/login
+      dockerfile: Dockerfile
+    container_name: pizza_login_test
+    environment:
+      - DJANGO_SETTINGS_MODULE=login_service.settings
+      - DATABASE_URL=postgresql://test_user:test_pass@test-db:5432/pizza_test
+      - DEBUG=True
+      - SECRET_KEY=test_secret_key_for_testing
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./services/login:/app
+    depends_on:
+      test-db:
+        condition: service_healthy
+    command: >
+      sh -c "
+        python manage.py migrate &&
+        python manage.py test authapp.tests --verbosity=2 &&
+        echo 'Login service tests completed'
+      "
+    profiles:
+      - test
+
+  # Menu Service 테스트
+  menu-service-test:
+    build:
+      context: ./services/menu
+      dockerfile: Dockerfile
+    container_name: pizza_menu_test
+    environment:
+      - DJANGO_SETTINGS_MODULE=menu_service.settings
+      - DATABASE_URL=postgresql://test_user:test_pass@test-db:5432/pizza_test
+      - REDIS_URL=redis://test-redis:6379/0
+      - DEBUG=True
+      - SECRET_KEY=test_secret_key_for_testing
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./services/menu:/app
+    depends_on:
+      test-db:
+        condition: service_healthy
+      test-redis:
+        condition: service_started
+    command: >
+      sh -c "
+        python manage.py migrate &&
+        python manage.py test catalog.tests --verbosity=2 &&
+        echo 'Menu service tests completed'
+      "
+    profiles:
+      - test
+
+  # Order Service 테스트
+  order-service-test:
+    build:
+      context: ./services/order
+      dockerfile: Dockerfile
+    container_name: pizza_order_test
+    environment:
+      - DJANGO_SETTINGS_MODULE=order_service.settings
+      - DATABASE_URL=postgresql://test_user:test_pass@test-db:5432/pizza_test
+      - LOGIN_SERVICE_URL=http://login-service-test:8000
+      - MENU_SERVICE_URL=http://menu-service-test:8000
+      - DEBUG=True
+      - SECRET_KEY=test_secret_key_for_testing
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./services/order:/app
+    depends_on:
+      test-db:
+        condition: service_healthy
+    command: >
+      sh -c "
+        python manage.py migrate &&
+        python manage.py test orders.tests --verbosity=2 &&
+        echo 'Order service tests completed'
+      "
+    profiles:
+      - test
+
+  # 통합 테스트 실행 컨테이너
+  integration-test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.test-runner
+    container_name: pizza_integration_test
+    environment:
+      - LOGIN_SERVICE_URL=http://login-service-test:8000
+      - MENU_SERVICE_URL=http://menu-service-test:8000
+      - ORDER_SERVICE_URL=http://order-service-test:8000
+      - DATABASE_URL=postgresql://test_user:test_pass@test-db:5432/pizza_test
+    volumes:
+      - ./scripts:/app/scripts
+      - ./test-results:/app/test-results
+    depends_on:
+      test-db:
+        condition: service_healthy
+      test-redis:
+        condition: service_started
+      login-service-test:
+        condition: service_completed_successfully
+      menu-service-test:
+        condition: service_completed_successfully
+      order-service-test:
+        condition: service_completed_successfully
+    command: >
+      sh -c "
+        echo 'Starting integration tests...' &&
+        python scripts/run_integration_tests.py &&
+        echo 'Integration tests completed'
+      "
+    profiles:
+      - integration-test
+
+volumes:
+  test_db_data:
+  test_redis_data:
+
+networks:
+  default:
+    name: pizza_test_network
