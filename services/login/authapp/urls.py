@@ -1,0 +1,13 @@
+from django.urls import path
+from .views import HealthView, RegisterView, LoginView, LogoutView, VerifyTokenView
+
+urlpatterns = [
+    path("healthz", HealthView.as_view()),
+    path("livez", HealthView.as_view()),
+    path("login/", LoginView.as_view()),
+    path("login/logout/", LogoutView.as_view()),
+    path("login/register/", RegisterView.as_view()),
+    path("int/auth/verify", VerifyTokenView.as_view()),
+]
+
+
