@@ -98,11 +98,11 @@ jobs:
           set -e
           echo "ℹ️ CD repo 업데이트 시작..."
 
-          git clone https://x-access-token:${{ secrets.CD_REPO_TOKEN }}@github.com/dttyeon/cd-repo.git || {
+          git clone https://x-access-token:${{ secrets.CD_REPO_TOKEN }}@github.com/hirundos/pizza_cd.git || {
             echo "❌ [ERROR] Git clone 실패"; exit 1;
           }
 
-          cd cd-repo/${{ matrix.service }}
+          cd pizza_cd/${{ matrix.service }}
           export NEW_TAG="${{ env.IMAGE_TAG }}"
           export SERVICE_NAME="${{ matrix.service }}"
 
