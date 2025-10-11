@@ -56,14 +56,13 @@ class CreateOrderView(APIView):
         if not (bran_id and date and time and isinstance(items, list)):
             return JsonResponse({"detail": "invalid payload"}, status=400)
 
-        # 주문 ID 생성 (실제로는 UUID나 다른 방식으로 생성해야 함)
         import uuid
         order_id = f"ORDER_{uuid.uuid4().hex[:10]}"
 
-        # Menu API에서 피자 ID 검증
-        menu_service_url = os.getenv('MENU_SERVICE_URL', 'http://localhost:8002')
+        #피자 id 가져오기
+        menu_service_url = os.getenv('MENU_SERVICE_URL', '"http://menu-service.default.svc.cluster.local:8000"')
         for item in items:
-            pizza_name = item.get("pizza_id")  # 피자 이름
+            pizza_name = item.get("pizza_id") 
             try:
                 response = requests.post(
                     f"{menu_service_url}/api/menu/get_pizza_id/",
