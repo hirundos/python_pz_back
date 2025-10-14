@@ -10,22 +10,21 @@ class HealthView(APIView):
     def get(self, request):
         return JsonResponse({"status": "ok"})
 
-
 class PizzaListView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        pizzas = Pizza.objects.select_related('pizza_type').all() 
         items = [
             {
                 "pizza_id": p.pizza_id,
-                "pizza_type_id": p.pizza_type_id,
+                "pizza_type__pizza_nm": p.pizza_type.pizza_nm, 
                 "size": p.size,
                 "price": p.price,
             }
-            for p in Pizza.objects.all()
+            for p in pizzas
         ]
         return JsonResponse(items, safe=False)
-
 
 class PizzaTypesView(APIView):
     permission_classes = [AllowAny]

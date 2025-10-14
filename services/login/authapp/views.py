@@ -36,9 +36,9 @@ class RegisterView(APIView):
 
     def post(self, request):
         data = request.data or {}
-        member_id = data.get("member_id")
-        password = data.get("password") or data.get("member_pwd")  # member_pwd도 지원
-        member_nm = data.get("member_nm")
+        member_id = data.get("id")
+        password = data.get("pw")
+        member_nm = data.get("name")
         if not member_id or not password or not member_nm:
             return JsonResponse({"detail": "missing fields"}, status=400)
         if Member.objects.filter(member_id=member_id).exists():
@@ -57,8 +57,8 @@ class LoginView(APIView):
 
     def post(self, request):
         data = request.data or {}
-        member_id = data.get("member_id")
-        password = data.get("password") or data.get("member_pwd")  # member_pwd도 지원
+        member_id = data.get("id")
+        password = data.get("pw")
         try:
             m = Member.objects.get(member_id=member_id)
         except Member.DoesNotExist:

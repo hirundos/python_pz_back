@@ -9,7 +9,7 @@ class PizzaType(models.Model):
 
     class Meta:
         db_table = "pizza_types"
-        app_label = 'catalog'  # 명시적 app_label 설정
+        app_label = 'catalog'
 
 
 class Pizza(models.Model):
@@ -20,6 +20,6 @@ class Pizza(models.Model):
 
     class Meta:
         db_table = "pizza"
-        app_label = 'catalog'  # 명시적 app_label 설정
+        app_label = 'catalog'  
 
 

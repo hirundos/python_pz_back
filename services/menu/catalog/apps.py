@@ -4,7 +4,7 @@ from django.apps import AppConfig
 class CatalogConfig(AppConfig):
     default_auto_field = 'django.db.models.AutoField'
     name = 'catalog'
-    label = 'catalog'  # 명시적 레이블 설정
+    label = 'catalog'
     verbose_name = 'Catalog'
 
     def ready(self):
