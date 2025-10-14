@@ -73,7 +73,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 CORS_ALLOW_ALL_ORIGINS = True
 
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-JWT_SECRET = os.getenv("JWT_SECRET", "change-me")
+JWT_SECRET = os.getenv("JWT_SECRET", "pz-ay7!@#")
 JWT_ACCESS_TTL_SECONDS = int(os.getenv("JWT_ACCESS_TTL_SECONDS", "3600"))
 
 
