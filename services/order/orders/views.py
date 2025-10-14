@@ -67,7 +67,7 @@ class CreateOrderView(APIView):
         import uuid
         order_id = f"ORDER_{uuid.uuid4().hex[:10]}"
 
-        menu_service_url = os.getenv('MENU_SERVICE_URL', '"http://menu-service.default.svc.cluster.local:8000"')
+        menu_service_url = os.getenv('MENU_SERVICE_URL', 'http://menu-service.default.svc.cluster.local:8000')
         
         processed_items = [] 
         
