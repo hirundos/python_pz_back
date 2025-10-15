@@ -33,20 +33,21 @@ class MyOrderView(APIView):
         member_id = _get_member_id_from_auth(request)
         if not member_id:
             return JsonResponse({"detail": "unauthorized"}, status=401)
+        
+        order_details = OrderDetail.objects.filter(order__member_id=member_id)
+
         items = [
             {
-                "order_id": o.order_id,
-                "bran_id": o.bran_id,
-                "pizza_id": o.pizza_id,
-                "quantity": o.quantity,
-                "date": o.date,
-                "time": o.time,
+                "order_id": od.order.order_id,
+                "bran_id": od.order.bran_id,
+                "pizza_id": od.pizza_id,
+                "quantity": od.quantity,
+                "date": od.order.date,
+                "time": od.order.time,
             }
-            for o in Order.objects.filter(member_id=member_id)
+            for od in order_details
         ]
         return JsonResponse(items, safe=False)
-
-
 
 class CreateOrderView(APIView):
     def post(self, request):
