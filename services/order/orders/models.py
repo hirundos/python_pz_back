@@ -10,11 +10,11 @@ class Branch(models.Model):
 
     class Meta:
         db_table = "branch"
-        app_label = 'orders'  # 명시적 app_label 설정
+        app_label = 'orders'
 
 
 class Order(models.Model):
-    order_id = models.CharField(primary_key=True, max_length=50)
+    order_id = models.AutoField(primary_key=True)
     member_id = models.CharField(max_length=50)
     bran = models.ForeignKey(Branch, on_delete=models.DO_NOTHING, db_column="bran_id")
     date = models.CharField(max_length=50)
@@ -25,7 +25,7 @@ class Order(models.Model):
 
     class Meta:
         db_table = "orders"
-        app_label = 'orders'  # 명시적 app_label 설정
+        app_label = 'orders'
 
 
 class OrderDetail(models.Model):

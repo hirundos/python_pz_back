@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from .models import Order, OrderDetail, Branch
 import datetime 
+from django.db.models import Max
 
 class HealthView(APIView):
     permission_classes = [AllowAny]
@@ -64,11 +65,7 @@ class CreateOrderView(APIView):
         if not (bran_id and isinstance(items, list) and len(items) > 0):
             return JsonResponse({"detail": "invalid payload"}, status=400)
 
-        import uuid
-        order_id = f"ORDER_{uuid.uuid4().hex[:10]}"
-
         menu_service_url = os.getenv('MENU_SERVICE_URL', 'http://menu-service.default.svc.cluster.local:8000')
-        
         processed_items = [] 
         
         for item in items:
@@ -89,10 +86,8 @@ class CreateOrderView(APIView):
                 if response.status_code != 200:
                     return JsonResponse({"detail": f"피자 '{pizza_name}'을 찾을 수 없습니다."}, status=400)
                 
-                # 피자 ID 추출
                 pizza_id = response.json().get("pizza_id") 
                 
-                # DB 저장을 위해 필요한 데이터 저장
                 processed_items.append({
                     "pizza_id": pizza_id,
                     "quantity": quantity
@@ -102,7 +97,7 @@ class CreateOrderView(APIView):
                 return JsonResponse({"detail": "메뉴 서비스 연결 실패"}, status=503)
 
         # DB에 주문 정보 저장
-        order = Order.objects.create(order_id=order_id, member_id=member_id, bran_id=bran_id, date=date, time=time)
+        order = Order.objects.create(member_id=member_id, bran_id=bran_id, date=date, time=time)
         
         # DB에 주문 상세 정보 저장
         for item in processed_items: 
@@ -112,7 +107,7 @@ class CreateOrderView(APIView):
                 quantity=item["quantity"]
             )
             
-        return JsonResponse({"order_id": order_id}, status=201)
+        return JsonResponse({"order_id": order.order_id}, status=201)
 
 class BranchListView(APIView):
     permission_classes = [AllowAny]
