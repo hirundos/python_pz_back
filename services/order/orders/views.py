@@ -37,6 +37,8 @@ class MyOrderView(APIView):
             {
                 "order_id": o.order_id,
                 "bran_id": o.bran_id,
+                "pizza_id": o.pizza_id,
+                "quantity": o.quantity,
                 "date": o.date,
                 "time": o.time,
             }
