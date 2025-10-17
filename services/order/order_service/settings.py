@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret")
 DEBUG = os.getenv("DEBUG", "true").lower() == "true"
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
+ALLOWED_HOSTS = ['hirundos.store', 'www.hirundos.store', 'menu-service', 'order-service', 'login-service']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -16,10 +16,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
-    "orders.apps.OrdersConfig",  # AppConfig 클래스 직접 사용
+    "orders.apps.OrdersConfig",  
 ]
 
-# orders 앱 명시적 로드
 from orders.apps import OrdersConfig
 
 MIDDLEWARE = [
