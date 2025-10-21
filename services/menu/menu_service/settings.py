@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret")
 DEBUG = os.getenv("DEBUG", "true").lower() == "true"
-ALLOWED_HOSTS = ['hirundos.store', 'www.hirundos.store', 'menu-service', 'order-service', 'login-service']
+ALLOWED_HOSTS = ['hirundos.store', 'www.hirundos.store', 'localhost', 'menu-service', 'order-service', 'login-service']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
